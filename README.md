@@ -1,6 +1,6 @@
 # TicketBookingSystem
 Build Instructions:
-o	This is a maven project. So the pre-requisite 
+o	This is a maven project. So, the pre-requisite to build this is project is to have Maven installed on your system, and add its path to Environment Variables.
 o	The zip file which you shall receive would be named ticket-booking-system.zip.
 o	Please unzip the file in your local system. Please go inside the project folder ticket-booking-system.You should be able to see a file with a name ‘pom.xml’. Please open the command prompt and point it to location of the folder which consists the above-mentioned file (i.e. pom.xml).
 o	Run the maven command: ‘mvn compile’. This command shall compile all the class files on your system.
