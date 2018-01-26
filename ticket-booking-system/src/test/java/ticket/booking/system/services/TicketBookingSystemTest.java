@@ -1,7 +1,5 @@
 package ticket.booking.system.services;
 
-import static org.junit.Assert.*;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +11,20 @@ import ticket.booking.system.models.BookTickets;
 import ticket.booking.system.models.Screen;
 import ticket.booking.system.models.SeatAvailabilityPerRow;
 
+/**
+ * This class covers all the scenarios of testing of this project
+ * @author Nitish Nalan
+ *
+ */
+
 public class TicketBookingSystemTest {
+	
+	/**
+	 * This class will test 4 scenarios for TicketBookingSystem class
+	 * 
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testConfirmationOfSeats() throws Exception {
 		Screen testScreen = new Screen(5,5);
@@ -26,10 +37,11 @@ public class TicketBookingSystemTest {
 		Map<String, SeatAvailabilityPerRow> testHashMap = new HashMap<String, SeatAvailabilityPerRow>();
 		testHashMap = testScreen.getHashmapMaxConsecutiveSeatAvailablitity();
 		
+		//Test Case 01: Trying to hold 3 tickets - A1,A2,A3 seats shall be assigned. We also confirm the booking.
 		int numberOfSeatsRequested = 3;
 		BookTickets actualBookTicketsObj = new BookTickets(numberOfSeatsRequested,"");
 			
-		// setting the expiration time as 30 seconds
+		// setting the expiration time as 2 seconds
 		ticketBookingSystemObj.setExpirationTime(2);
 		int referenceId = ticketBookingSystemObj.findAndHoldSeatsForUser(numberOfSeatsRequested,actualBookTicketsObj,numberOfSeatsRequested);
 		ticketBookingSystemObj.bookAndConfirmSeats(referenceId);
@@ -47,11 +59,11 @@ public class TicketBookingSystemTest {
 		}
 		
 		
-		//Test Case 02: Trying to book 4 tickets
+		//Test Case 02: Trying to book 4 tickets - B1,B2,B3,B4 seats shall be assigned. We also confirm the booking.
 		numberOfSeatsRequested = 4;
 		actualBookTicketsObj = new BookTickets(numberOfSeatsRequested,"");
 					
-		// setting the expiration time as 7 seconds
+		// setting the expiration time as 2 seconds
 		ticketBookingSystemObj.setExpirationTime(2);
 		referenceId = ticketBookingSystemObj.findAndHoldSeatsForUser(numberOfSeatsRequested,actualBookTicketsObj,numberOfSeatsRequested);
 		ticketBookingSystemObj.bookAndConfirmSeats(referenceId);
@@ -69,7 +81,7 @@ public class TicketBookingSystemTest {
 									+ "time of hold parameter.");
 		}
 				
-		//Test Case 03: Trying to book 9 tickets
+		//Test Case 03: Trying to book 9 tickets - C1,C2,C3,C4,C5,D1,D2,D3,A4 seats shall be assigned. We also confirm the booking.
 		numberOfSeatsRequested = 9;
 		actualBookTicketsObj = new BookTickets(numberOfSeatsRequested,"");
 					
@@ -91,7 +103,7 @@ public class TicketBookingSystemTest {
 									+ "time of hold parameter.");
 		}
 		
-		//Test Case 04: Trying to book 4 tickets but not confirming the booking
+		//Test Case 04: Trying to book 4 tickets but not confirming the booking. Hence the booktickets object will not be found in the hashmap.
 		numberOfSeatsRequested = 4;
 		actualBookTicketsObj = new BookTickets(numberOfSeatsRequested,"");
 					
@@ -99,7 +111,7 @@ public class TicketBookingSystemTest {
 		ticketBookingSystemObj.setExpirationTime(2);
 		referenceId = ticketBookingSystemObj.findAndHoldSeatsForUser(numberOfSeatsRequested,actualBookTicketsObj,numberOfSeatsRequested);
 		//ticketBookingSystemObj.bookAndConfirmSeats(referenceId);
-		Thread.sleep(10000);
+		Thread.sleep(7000);
 		actualBookingTicketHashMap = ticketBookingSystemObj.getHashMapBookedTickets();
 					
 		boolean testCase4 = compareBookedTicketsMap(actualBookingTicketHashMap, expectedBookingTicketHashMap);
@@ -113,6 +125,10 @@ public class TicketBookingSystemTest {
 
 	}
 	
+	/**
+	 * This class is responsible to test different scenarios for the seating arrangement of the screen object.
+	 * @throws Exception
+	 */
 	@Test
 	public void testBasicBookingOrder() throws Exception {
 		
@@ -151,7 +167,6 @@ public class TicketBookingSystemTest {
 		
 		numberOfSeatsRequested = 5;
 		b1 = new BookTickets(numberOfSeatsRequested,"");
-		//ticketBookingSystemObj.glbNumbOfSeatsRequested = numberOfSeatsRequested;
 		ticketBookingSystemObj.findAndHoldSeatsForUser(numberOfSeatsRequested,b1,numberOfSeatsRequested);
 		
 		if(!testScreen.equals(getExpectedScreen("3"))){
@@ -176,11 +191,16 @@ public class TicketBookingSystemTest {
 		
 	}
 		
+	/**
+	 * This method generates various seating arrangement based on the testing scenario and is our expected scenarios for the
+	 * seating arrangement of the screens.
+	 * @param testType Type of testing scenario we would like to perform.
+	 * @return Expected Screen Object
+	 */
 	private Screen getExpectedScreen(String testType){
 		Screen expectedScreen = new Screen(5,5);
 		String[][] seatingArrangement = {{}};
-		//switch
-			
+					
 		switch(testType)
 		{
 			case "1": 
@@ -230,9 +250,17 @@ public class TicketBookingSystemTest {
 		return expectedScreen;
 	}
 	
-	private boolean compareBookedTicketsMap(Map<Integer, BookTickets> actualBookingTicketHashMap,Map<Integer, BookTickets> expectedBookingTicketHashMap) {
-		
-		
+
+	/**
+	 * This method compares ActualHashMapBookingTicket with the ExpectedHashMapBookingTicket.
+	 * We do not compare time of hold for the scenarios here.
+	 * We compare booking reference number, number of seats requested to be booked, seats which are assigned
+	 * and if the booking status is same or not.
+	 * @param actualBookingTicketHashMap
+	 * @param expectedBookingTicketHashMap
+	 * @return
+	 */
+	private boolean compareBookedTicketsMap(Map<Integer, BookTickets> actualBookingTicketHashMap,Map<Integer, BookTickets> expectedBookingTicketHashMap) {		
 		boolean compareFlag = false;
 		if(!actualBookingTicketHashMap.isEmpty()) {
 			for (int eachEntry : actualBookingTicketHashMap.keySet()) {
